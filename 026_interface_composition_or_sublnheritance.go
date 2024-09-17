@@ -2,16 +2,16 @@ package main
 
 import "fmt"
 
-type IBase interface {
-	FuncBase()
-}
+type Subject struct{}
 
+type IBase interface{ FunBase() }
 type IDerivative interface {
-	IBase //內嵌基礎介面
-	FuncDerivative()
+	IBase
+	FunDerivative()
 }
 
-type Subject struct {
+func (s Subject) FunDerivative() {
+	fmt.Println("FunDerivative()")
 }
 
 // ==== 組合(類繼承)約束 ====
@@ -23,11 +23,8 @@ type Subject struct {
 // 	fmt.Println("FuncBase()")
 // }
 
-func (s Subject) FuncDerivative() {
-	fmt.Println("FuncDerivative()")
-}
-
 func main() {
-	var refDerivative IDerivative = &Subject{}
-	refDerivative.FuncDerivative()
+
+	var ref_derivative IDerivative = &Subject{}
+	ref_derivative.FunDerivative()
 }
