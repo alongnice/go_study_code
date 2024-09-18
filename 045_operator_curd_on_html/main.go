@@ -49,10 +49,14 @@ func Create(w http.ResponseWriter, r *http.Request) {
 		if nil == err {
 			username := r.Form.Get("username")
 			age, _ := strconv.Atoi(r.Form.Get("age"))
-			sex := r.Form.Get("sex")
 
-			if sex == "" {
-				sex = "unknown" // 默认值
+			sex := r.Form.Get("sex")
+			if sex == "M" {
+				sex = "male"
+			} else if sex == "F" {
+				sex = "female"
+			} else if sex == "" {
+				sex = "unknown"
 			}
 
 			timestamp := time.Now()
@@ -130,13 +134,18 @@ func Update(w http.ResponseWriter, r *http.Request) {
 		err := r.ParseForm()
 		if nil == err {
 			var id = r.Form.Get("id")
-			var new_name = r.Form.Get("name")
+			var new_name = r.Form.Get("new_username")
+			if new_name == "" {
+				fmt.Fprintln(w, id, new_name)
+				// fmt.Fprintln(w, "name 为空行")
+				return
+			}
 
 			// 建立链接
 			db, err := sql.Open("mysql", "root:password@/sreetchat?charset=utf8mb4")
 			checkErr(err)
 
-			stmt, err := db.Prepare("UPDATE sreetchat.user SET name=? WHERE id=?")
+			stmt, err := db.Prepare("UPDATE sreetchat.user SET username=? WHERE id=?")
 			checkErr(err)
 			res, err := stmt.Exec(new_name, id)
 			fmt.Fprintln(w, "update success")
